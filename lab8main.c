@@ -1,3 +1,4 @@
+/* Console example using the date/time file functions. */
 #include <stdio.h>
 #include "lab8.h"
 #define MAX 100
