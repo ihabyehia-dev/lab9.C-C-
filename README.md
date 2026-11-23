@@ -19,4 +19,4 @@ gcc -Wall -Wextra lab8.c lab8main.c -o lab8
 ./lab8
 ```
 
-Run the program from the same directory as the two text files. The output-writing logic was corrected: the program reads the second input into a populated array, then creates `lab8output.txt` without overwriting the source files. File errors and string widths are handled more safely.
+Run the program from the same directory as the two text files. The program loads date/time records into an array and writes the formatted results to `lab8output.txt`, leaving the sample input files unchanged. The file operations include error checks and bounded string input.
