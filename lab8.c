@@ -1,3 +1,4 @@
+/* Functions for reading and formatting sample date/time records. */
 #include <stdio.h>
 #include "lab8.h"
 
