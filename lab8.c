@@ -1,102 +1,56 @@
-/***************************************************************** 
-
-    File: lab8.c
-
-    Author: [ihab yehia]
-    Seneca email: [iyehia1@myseneca.ca]
-
-    To compile program in codespaces, in terminal pane type:
-        gcc -Wall lab8.c lab8main.c
-    To run program in codespaces, in terminal pane type:
-        ./a.out
-        
-***************************************************************/
-//Uncomment the next line if you are using Visual Studio
-//#define _CRT_SECURE_NO_WARNINGS
-
 #include <stdio.h>
 #include "lab8.h"
 
-int readNumericDataFile(const char* name, struct DateTime records[], int maxCapacity){
-    FILE *fp = fopen(name,"r");
-       int i = 0;
-    if(fp != NULL){
-        while(i < maxCapacity && fscanf(fp, "%d,%d,%d,%d,%d\n" ,&records[i].day,&records[i].month,&records[i].year,&records[i].hour,&records[i].minute) == 5){
-         i++;
-        }
+int readNumericDataFile(const char* name, struct DateTime records[], int maxCapacity) {
+    FILE* fp = fopen(name, "r");
+    if (fp == NULL) {
+        printf("Could not open %s\n", name);
+        return 0;
     }
-    else{
-        printf("Error opening the file!");
+    int count = 0;
+    while (count < maxCapacity && fscanf(fp, "%d,%d,%d,%d,%d", &records[count].day,
+           &records[count].month, &records[count].year, &records[count].hour,
+           &records[count].minute) == 5) {
+        count++;
     }
     fclose(fp);
-    return i;
+    return count;
 }
 
-int readStringDataFile(const char* name, struct DateTime records[], int maxCapacity){
-    FILE *f = fopen(name,"r");
-    char temp[10];
-    int i = 0;
-    if(f != NULL){
-        while(i < maxCapacity && fscanf(f, "%d/%d/%d;%d:%d %s",&records[i].day,&records[i].month,&records[i].year,&records[i].hour,&records[i].minute, temp) == 6){
-            printf("%d/%d/%d,%02d:%02d %s\n",records[i].day,records[i].month,records[i].year,records[i].hour,records[i].minute, temp);       
-            i++;
-        }
+int readStringDataFile(const char* name, struct DateTime records[], int maxCapacity) {
+    FILE* fp = fopen(name, "r");
+    if (fp == NULL) {
+        printf("Could not open %s\n", name);
+        return 0;
     }
-    else{
-        printf("Error in opening the file!");
+    char ampm[10];
+    int count = 0;
+    while (count < maxCapacity && fscanf(fp, "%d/%d/%d;%d:%d %9s",
+           &records[count].day, &records[count].month, &records[count].year,
+           &records[count].hour, &records[count].minute, ampm) == 6) {
+        printf("%02d/%02d/%d %02d:%02d %s\n", records[count].day,
+               records[count].month, records[count].year, records[count].hour,
+               records[count].minute, ampm);
+        count++;
     }
-    fclose(f);
-    return i;
+    fclose(fp);
+    return count;
 }
 
-void printToFile(const char* filename, struct DateTime data[], int size){
-
-    FILE *p = fopen(filename,"r");
-    char* month;
-    int i = 0;
-    if(p != NULL){
-        while(i < size && fscanf(p, "%d/%d/%d;%d:%d %s",&data[i].day,&data[i].month,&data[i].year,&data[i].hour,&data[i].minute, month) == 6){
-           if(data[i].month == 1){
-            month ="January";
-        }
-   else if(data[i].month == 2){
-      month ="February";
-   } 
-   else if(data[i].month == 3){
-      month ="March";
-   } 
-   else if(data[i].month == 4){
-      month ="April";
-   } 
-   else if(data[i].month == 5){
-      month ="May";
-   } 
-   else if(data[i].month == 6){
-      month ="June";
-   } 
-   else if(data[i].month == 7){
-      month ="July";
-   } 
-   else if(data[i].month == 8){
-      month ="August";
-   } 
-   else if(data[i].month == 9){
-      month ="September";
-   } 
-     else if(data[i].month == 10){
-      month ="October";
-   } else if(data[i].month == 11){
-      month ="November";
-   } else if(data[i].month == 12){
-      month ="December";
-   } 
-            printf("%s %d, %d\n",month,data[i].day,data[i].year);       
-            i++;
+void printToFile(const char* filename, struct DateTime data[], int size) {
+    const char* months[] = { "January", "February", "March", "April", "May", "June",
+                            "July", "August", "September", "October", "November", "December" };
+    FILE* fp = fopen(filename, "w");
+    if (fp == NULL) {
+        printf("Could not create %s\n", filename);
+        return;
+    }
+    for (int i = 0; i < size; i++) {
+        if (data[i].month >= 1 && data[i].month <= 12) {
+            fprintf(fp, "%s %d, %d at %02d:%02d\n", months[data[i].month - 1],
+                    data[i].day, data[i].year, data[i].hour, data[i].minute);
         }
     }
-    else{ //test
-        printf("Error in opening the file!");
-    }
-    fclose(p);
-
+    fclose(fp);
+    printf("Saved %d records to %s\n", size, filename);
 }
